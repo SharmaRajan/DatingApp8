@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
-[ApiController]
-[Route("api/[controller]")] // To access this controller we type: localhost:portNo/api/users
-public class UsersController : ControllerBase
+// [ApiController]
+// [Route("api/[controller]")] // To access this controller we type: localhost:portNo/api/users
+public class UsersController : BaseApiController
 {
     private readonly DataContext _context;
 
     // inject DB to access data
-    public UsersController(DataContext context)
+    public UsersController(DataContext context) //: base(context)
     {
         _context = context;
     }
