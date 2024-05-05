@@ -1,5 +1,7 @@
+using API.Data;
 using API.Extensions;
 using API.Middleware;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,5 +47,18 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// This is going to give us access to all of the services that we have inside this Program class
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+
+try{
+    var context = services.GetRequiredService<DataContext>();
+    await context.Database.MigrateAsync();
+    await Seed.SeedUsers(context);
+}catch(Exception exc){
+    var logger = services.GetService<ILogger<Program>>();
+    logger.LogError(exc, "An Error occured during migration");
+}
 
 app.Run();

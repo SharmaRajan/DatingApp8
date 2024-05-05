@@ -1,5 +1,8 @@
 ﻿using API.Data;
+using API.DTOs;
 using API.Entities;
+using API.Repository;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,12 +14,14 @@ namespace API.Controllers;
 [Authorize]
 public class UsersController : BaseApiController
 {
-    private readonly DataContext _context;
+    private readonly IUserRepository _userRepo;
+    private readonly IMapper _mapper;
 
     // inject DB to access data
-    public UsersController(DataContext context) //: base(context)
+    public UsersController(IUserRepository userRepository, IMapper mapper) //: base(context)
     {
-        _context = context;
+        _mapper = mapper;
+        _userRepo = userRepository;
     }
 
     // [HttpGet]
@@ -29,21 +34,45 @@ public class UsersController : BaseApiController
     // making it asynchronous 
     [HttpGet]
     [AllowAnonymous] // allow anonymously for this particular request
-    public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers(){
-        var users = await _context.Users.ToListAsync();
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+    {
+        // 1st way
+        // var users = await _context.Users.ToListAsync();
+        //return users;
 
-        return users;
+        // 2nd way
+        // var users = await _userRepo.GetUsersAsync();
+
+        // var usersToReturn = _mapper.Map<IEnumerable<MemberDto>>(users);
+
+        // return Ok(usersToReturn);
+
+        // 3rd way
+        var users = await _userRepo.GetMembersAsync();
+
+        return Ok(users);
     }
 
-    [HttpGet("{id}")] // /api/users/3
-    public async Task<ActionResult<AppUser>> GetUser(int id){
+    [HttpGet("{username}")] // /api/users/3
+    public async Task<ActionResult<MemberDto>> GetUser(string username)
+    {
         // for synchronous
         // var users = _context.Users.Find(id);
 
         // return users;
 
         // for asynchronous
-        return await _context.Users.FindAsync(id);
+        //return await _context.Users.FindAsync(id);
+
+        // 2nd way of doing this
+        //var users = await _userRepo.GetUserByUsernameAsync(username);
+
+        //var userToReturn = _mapper.Map<MemberDto>(users);
+
+        //return Ok(userToReturn);
+
+        // 3rd way of doing this
+        return await _userRepo.GetMemberAsync(username);
     }
 
 }

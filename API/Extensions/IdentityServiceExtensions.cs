@@ -10,6 +10,7 @@ namespace API.Extensions
 {
     public static class IdentityServiceExtensions
     {
+        // Jwt configuration class
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
