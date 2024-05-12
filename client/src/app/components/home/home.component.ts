@@ -17,20 +17,20 @@ export class HomeComponent implements OnInit{
   constructor(private http: HttpClient){}
 
   ngOnInit(): void {
-    this.getUsers();
+    //this.getUsers();
   }
 
   registerToggle(){
     this.registerMode = !this.registerMode;
   }
 
-  getUsers(){
-    this.http.get(this.baseUrl).subscribe({
-      next : response => this.users = response,
-      error: (error) => console.log(error),
-      complete: () => console.log('Request has completed')
-    });
-  }
+  // getUsers(){
+  //   this.http.get(this.baseUrl).subscribe({
+  //     next : response => this.users = response,
+  //     error: (error) => console.log(error),
+  //     complete: () => console.log('Request has completed')
+  //   });
+  // }
 
   cancelRegisterMode(event: boolean){
     this.registerMode = event;
